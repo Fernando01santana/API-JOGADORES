@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, Query, UsePipes, ValidationPipe } from "@nestjs/common";
 import { CriarCategoriaDto } from "../dtos/criar-categoria.dto";
 import { ICategoria } from "../interface/categoria.interface";
-import { CategorieValidateParameterPipe } from "../pipes/categorie-validator";
+import { CategorieValidateParameterPipe } from "../../../shared/common/pipes/categorie-validator";
 import { CategoriaService } from "../services/categoria.service";
 
 @Controller('/api/v1/categories')

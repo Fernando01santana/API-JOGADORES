@@ -1,7 +1,7 @@
 import { Body, Controller, Delete, Get, Param, Post, Put, Query, UsePipes, ValidationPipe } from '@nestjs/common';
 import {CriarJogadorDto} from '../dtos/criar-jogador.dto'
 import { IJogador } from '../interface/jogador.interface';
-import { JogadoresValidacaoParametrosPipe } from '../pipes/jogadores-validator-parameter';
+import { JogadoresValidacaoParametrosPipe } from '../../../shared/common/pipes/jogadores-validator-parameter';
 import { JogadoresService } from '../services/jogadores.service';
 
 @Controller('api/v1/jogadores')
