@@ -28,7 +28,7 @@ export class JogadoresService {
 
     }
 
-    private async criar(criarJogadorDto:CriarJogadorDto): Promise<IJogador>{
+    public async criar(criarJogadorDto:CriarJogadorDto): Promise<IJogador>{
         const jogadorCriado = new this.jogadorModule(criarJogadorDto)
         try {
             const jogadorSalvado = await jogadorCriado.save()
@@ -40,14 +40,25 @@ export class JogadoresService {
         }
     }
 
-    public async update(id:string,criarJogadorDto:CriarJogadorDto): Promise<IJogador>{
-        const jogador = await this.jogadorModule.findById(id)        
-        if (!jogador) {
-            throw new AppError("Jogador náo encontrado",404)
-        }
+    public async update(id:string,criarJogadorDto:CriarJogadorDto): Promise<IJogador>{  
+        try {
+            const {email,nome,telefoneCelular} = criarJogadorDto
+            const allJogadores = await this.jogadorModule.find()
+            const verifyEmail =   allJogadores.filter(jogador => (jogador.email === criarJogadorDto.email))
+            const jogadorExists = allJogadores.filter(jogador => (jogador.id === id))
 
-        const jogadorAtualizado = await this.jogadorModule.findOneAndUpdate({email:jogador.email},{$set:criarJogadorDto}).exec()        
-        return jogadorAtualizado
+            if (jogadorExists.length === 0 || verifyEmail.length === 1) {
+                throw new AppError("Jogador náo encontrado ou email informado ja em uso",404)
+            }
+    
+            const jogadorAtualizado = await this.jogadorModule.findOneAndUpdate({email:jogadorExists[0].email},{$set:criarJogadorDto}).exec()        
+            return jogadorAtualizado
+        } catch (error) {
+            console.log(error);
+            
+            throw new AppError("Erro ao atualizar jogador",400)
+        }      
+
     }
 
     public async findAll():Promise<IJogador[]>{

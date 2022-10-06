@@ -1,4 +1,4 @@
-import { BadRequestException, Injectable, Logger } from "@nestjs/common";
+import { BadRequestException, Inject, Injectable, Logger } from "@nestjs/common";
 import { InjectModel } from "@nestjs/mongoose";
 import { Model } from "mongoose";
 import { IJogador } from "src/modules/jogadores/interface/jogador.interface";
@@ -39,13 +39,12 @@ export class CategoriaService{
         if(!searchCategorie){
             throw new AppError('Nenhuma categoria com o id informado encontrada',401);
         }
-
-        const categorieUpdated = await this.categorieModule.findOneAndUpdate({categoria:updatedCategorie.categoria},{$set:updatedCategorie}).exec()
+        const categorieUpdated = await this.categorieModule.findOneAndUpdate({id:id},{$set:updatedCategorie}).exec()
         return categorieUpdated
     }
 
-    public async deleteCategorie(id:string):Promise<void>{
-        const searchCategorie = await this.categorieModule.findById(id)
+    public async deleteCategorie(id:any):Promise<void>{
+        const searchCategorie = await this.categorieModule.findById(String(id.id))
         if (!searchCategorie) {
             throw new AppError('Nenhuma categoria  encontrada',401);
         }
@@ -55,8 +54,8 @@ export class CategoriaService{
 
     }
 
-    async findAllById(id:string):Promise<ICategoria>{
-        return this.categorieModule.findById(id)
+    async findAllById(id:any):Promise<ICategoria>{
+        return this.categorieModule.findById(String(id.id))
     }
 
     async searchJogadorById(id:string):Promise<IJogador>{
@@ -78,6 +77,20 @@ export class CategoriaService{
             throw new BadRequestException(`Erro ao vincular jogador a categoria: ${error.message}`)        
         }
     }
+
+    async consultarCategoriaDoJogador(idJogador: any): Promise<ICategoria> {
+       const jogadores = await this.jogadoresService.findAll()
+
+       const jogadorFilter = jogadores.filter( jogador => jogador._id == idJogador )
+
+       if (jogadorFilter.length == 0) {
+           throw new BadRequestException(`O id ${idJogador} não é um jogador!`)
+       }
+
+        return await this.categorieModule.findOne().where('jogadores').in(idJogador).exec() 
+
+    }
+
 }
 
 

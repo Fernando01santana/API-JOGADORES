@@ -8,7 +8,7 @@ import { JogadoresService } from '../services/jogadores.service';
 export class JogadoresController {
     constructor(private readonly jogadorService:JogadoresService){}
     @UsePipes(ValidationPipe)
-    @Post()
+    @Post('create')
     async create(
         @Body() CriarJogadorDto:CriarJogadorDto
     ){
@@ -16,23 +16,23 @@ export class JogadoresController {
         return service
     }
 
-    @Get()
+    @Get('list')
     async list(){
         const service = await this.jogadorService.findAll()
         return service
     }
 
-    @Get()
+    @Get('list/one')
         async findOne(@Query('email') email:string):Promise<IJogador>{
             return this.jogadorService.findByEmail(email)
     }
 
-    @Delete()
-    async remove(@Query('id',JogadoresValidacaoParametrosPipe) id:string):Promise<void>{
+    @Delete('remove')
+    async remove(@Query('id') id:string):Promise<void>{
         return await this.jogadorService.delete(String(id))
     }
 
-    @Put('/:_id')
+    @Put('update/:id')
     async update(@Param('id') id:string,@Body() CriarJogadorDto:CriarJogadorDto):Promise<IJogador>{
        const jogadorUpdated =  await this.jogadorService.update(id,CriarJogadorDto)
        return jogadorUpdated
