@@ -18,7 +18,7 @@ Desafio
   imports: [
     MongooseModule.forFeature([
       {name: 'Desafio', schema: DesafioSchema},
-      {name: 'Partida', schema: PartidaSchema}]),
+      {name: 'partidas', schema: PartidaSchema}]),
     JogadoresModule,
     CategoriasModule],
   controllers: [DesafiosController],

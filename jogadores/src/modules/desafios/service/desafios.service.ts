@@ -18,8 +18,10 @@ Desafio
 export class DesafiosService {
 
     constructor(
-        @InjectModel('Desafio') private readonly desafioModel: Model<Desafio>,
-        @InjectModel('Partida') private readonly partidaModel: Model<Partida>,
+        @InjectModel('Desafio') 
+        private readonly desafioModel: Model<Desafio>,
+        @InjectModel('partidas') 
+        private readonly partidaModel: Model<Partida>,
         private readonly jogadoresService: JogadoresService,
         private readonly categoriasService: CategoriaService) {}
 
@@ -57,9 +59,9 @@ export class DesafiosService {
     async consultarTodosDesafios(): Promise<Array<Desafio>> {
         try {
             return  await this.desafioModel.find()
-            .populate("solicitante")
-            .populate("jogadores")
-            .populate("partidas")
+            .populate('jogadores')
+            .populate('solicitante')
+            .populate([{ path: 'partida', strictPopulate: false }])
             .exec()
         } catch (error) {
             console.log(error);
